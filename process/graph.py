@@ -5,6 +5,7 @@ distance = {}
 prev = {}
 path = []
 
+
 class Node:
     def __init__(self, n_type, n_name):
         self.type = n_type
@@ -39,41 +40,43 @@ class Graph:
                 neigh.append(n.name)
             print(v.name + " : " + str(neigh))
 
-    def dijkstra(self, source, dest):
+    def dijkstra(self, source):
         current_strength = source.strength
         queue = []
         visited[source] = True
         distance[source] = 0
         prev[source] = source
-        queue.append((0, source))
+        queue.append((0, source, current_strength))
 
         while queue:
-            curr_dist, popped_node = min(queue, key=lambda x: x[0])
+            curr_dist, popped_node, strength = min(queue, key=lambda x: x[0])
             neighbours = self.graph[popped_node]
             for n in neighbours:
-                print(n.name)
                 if visited[n]:
                     continue
                 new_dist = 1 + curr_dist
-                if new_dist < distance[n]:
+                new_strength = strength - 1 if n.type == "computer" else strength * 2
+                if new_dist < distance[n] and new_strength >= 0:
                     prev[n] = popped_node
                     distance[n] = new_dist
-                    queue.append((new_dist, n))
-            queue.remove((curr_dist, popped_node))
+                    queue.append((new_dist, n, new_strength))
+            queue.remove((curr_dist, popped_node, strength))
             visited[popped_node] = True
 
         for d in distance.keys():
             print(d.name + " : " + str(distance[d]) + " : " + str(prev[d].name))
-        # print(prev)
 
+    def get_path(self, source, dest):
+        self.dijkstra(source)
+        if dest not in self.graph.keys() or source not in self.graph.keys():
+            return {"message": "Source/Dest is wrong", "path": [-1]}
+        elif distance[dest] >= sys.maxsize:
+            return {"message": "No path exists", "path": [-1]}
         path.append(dest.name)
         while prev[dest] != dest:
             dest = prev[dest]
             path.append(dest.name)
-        print(path[::-1])
-
-
-
+        return {"message": "Success", "path": path[::-1]}
 
 
 if __name__ == '__main__':
@@ -99,4 +102,4 @@ if __name__ == '__main__':
     graph.add_edge(a5, a4)
 
     graph.print_graph()
-    graph.dijkstra(a1, a5)
+    print(graph.get_path(a1, a4))
