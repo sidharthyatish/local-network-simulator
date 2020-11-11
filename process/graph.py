@@ -65,6 +65,7 @@ class Graph:
     def dijkstra(self, source):
         current_strength = source.strength
         queue = []
+        self.initialise_dijkstra_table_to_default()
         visited[source] = True
         distance[source] = 0
         prev[source] = source
@@ -98,6 +99,12 @@ class Graph:
             dest = prev[dest]
             path.append(dest.name)
         return path[::-1]
+
+    def initialise_dijkstra_table_to_default(self):
+        for curr_node in self.graph.keys():
+            distance[curr_node] = sys.maxsize
+            visited[curr_node] = False
+            prev[curr_node] = curr_node
 
 
 if __name__ == '__main__':
