@@ -57,7 +57,7 @@ class Graph:
             neigh = []
             for n in self.graph[v]:
                 neigh.append(n.name)
-            print(v.name + " : " + str(neigh))
+            print(v.name + "(" + str(v.strength) + ")" + " : " + str(neigh))
 
     def dijkstra(self, source):
         current_strength = source.strength
@@ -106,25 +106,42 @@ class Graph:
 
 if __name__ == '__main__':
     graph = Graph()
-    a1 = Node(n_type="computer", n_name="A1")
-    a2 = Node(n_type="computer", n_name="A2")
-    a3 = Node(n_type="computer", n_name="A3")
-    a4 = Node(n_type="computer", n_name="A4")
-    a5 = Node(n_type="computer", n_name="A5")
-    r1 = Node(n_type="router", n_name="R1")
+    graph.add_node(type="COMPUTER", name="A1")
+    graph.add_node(type="COMPUTER", name="A2")
+    graph.add_node(type="COMPUTER", name="A3")
+    graph.add_node(type="COMPUTER", name="A4")
+    graph.add_node(type="COMPUTER", name="A5")
+    graph.add_node(type="REPEATER", name="R1")
+    graph.add_node(type="COMPUTER", name="A6")
 
-    graph.add_node(a1)
-    graph.add_node(a2)
-    graph.add_node(a3)
-    graph.add_node(a4)
-    graph.add_node(a5)
-    graph.add_node(r1)
-    graph.add_edge(a1, a2)
-    graph.add_edge(a1, a3)
-    graph.add_edge(a2, r1)
-    graph.add_edge(a2, a4)
-    graph.add_edge(r1, a5)
-    graph.add_edge(a5, a4)
+    graph.add_edge("A1", "A2")
+    graph.add_edge("A1", "A3")
+    graph.add_edge("A2", "R1")
+    graph.add_edge("A2", "A4")
+    graph.add_edge("R1", "A5")
+    graph.add_edge("A5", "A4")
+
+    if graph.add_node(name="A6", type="COMPUTER"):
+        print("Added")
+    else:
+        print("Not added")
 
     graph.print_graph()
-    print(graph.get_path(a1, a4))
+
+    # a2.strength=3
+
+    node = graph.get_node_by_name("R1")
+    node.strength = 10
+    print(node.name, node.type, node.strength)
+    graph.print_graph()
+
+    node = graph.get_node_by_name("R1")
+    node.strength = 10
+    print(node.name, node.type, node.strength)
+    a1 = graph.get_node_by_name("A1")
+    a5 = graph.get_node_by_name("A5")
+    path = graph.get_path(a1,a5)
+    print(path)
+    if path[0] is not None:
+        print("->".join(path))
+    # print(graph.get_path(a1, a4))
