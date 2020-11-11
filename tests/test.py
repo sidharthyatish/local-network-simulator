@@ -37,11 +37,17 @@ class NetworkSimulationTests(unittest.TestCase):
         self.assertEqual(call_2.status, "400 BAD REQUEST")
         self.assertEqual(call_2.json["msg"], "Device 'A1' already exists")
 
-    def test_calling_create_devices_with_invalid_type_gives_error_message_and_400_response(self):
+    def test6_calling_create_devices_with_invalid_type_gives_error_message_and_400_response(self):
         call = self.app.post('/ajiranet/process',
                              data='CREATE /devices\ncontent-type : application/json\n{"type" : "PHONE", "name" : "P1"}')
         self.assertEqual(call.status, "400 BAD REQUEST")
         self.assertEqual(call.json["msg"], "type 'PHONE' is not supported")
+
+    def test7_fetching_devices_with_devices_created_returns_device_list(self):
+        call = self.app.post('/ajiranet/process',
+                             data='FETCH /devices')
+        self.assertEqual(call.status, "200 OK")
+        self.assertEqual(call.json["devices"], [{'name': 'C1', 'type': 'COMPUTER'}, {'name': 'B1', 'type': 'COMPUTER'}, {'name': 'A1', 'type': 'COMPUTER'}])
 
 
 if __name__ == '__main__':
