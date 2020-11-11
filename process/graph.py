@@ -27,9 +27,6 @@ class Graph:
         new_node = Node(n_type=type, n_name=name)
         if new_node not in self.graph.keys():
             self.graph[new_node] = set()
-            distance[new_node] = sys.maxsize
-            visited[new_node] = False
-            prev[new_node] = new_node
             return True
         return False
 
