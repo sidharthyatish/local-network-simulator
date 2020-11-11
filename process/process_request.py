@@ -1,10 +1,11 @@
 from process.create import creator
 from process.fetch import fetcher
+from process.modify import modifier
 import json
 
 
 def input_validator(input_data):
-    possible_commands = {"CREATE": ["/devices", "/connections"], "MODIFY": ["/strength"], "FETCH": ["/devices"]}
+    possible_commands = {"CREATE": ["/devices", "/connections"], "MODIFY": ["/devices"], "FETCH": ["/devices"]}
 
     response = {"command": None, "sub_command": None, "data": {}}
     data_lines = input_data.splitlines()
@@ -25,7 +26,7 @@ def input_validator(input_data):
             else:
                 response["command"] = command
                 sub_command = command_line[1]
-                if command != "FETCH" and sub_command not in possible_commands[command]:
+                if command == "CREATE" and sub_command not in possible_commands[command]:
                     response["sub_command"] = "INVALID"
                 else:
                     response["sub_command"] = sub_command
@@ -92,6 +93,8 @@ def process_req_data(input_data):
             code, message = fetcher.fetch_devices()
         elif "info-routes" in validated_input["sub_command"]:
             fetcher.fetch_route_information(validated_input["sub_command"])
+    elif validated_input["command"] == "MODIFY":
+        code,message=modifier.modify_strength(validated_input["sub_command"],validated_input["data"])
     result["code"] = code
     result["message"] = message
     return result
