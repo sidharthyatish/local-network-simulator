@@ -10,7 +10,7 @@ def process_request():
     # response = process_request.process_request_data(data)
     res = proc.process_req_data(data)
 
-    return {"msg": res["message"]},res["code"]
+    return res["message"],res["code"]
     # print(response)
     # return {"msg": response["message"]}, response["code"]
 

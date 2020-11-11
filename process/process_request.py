@@ -75,24 +75,25 @@ def process_request_data(data):
 def process_req_data(input_data):
     validated_input = input_validator(input_data)
     result = {"code": None, "message": None}
+    code = 404
+    message = "Unknown error"
     print(validated_input)
     if validated_input["command"] == "INVALID" or validated_input["sub_command"] == "INVALID" or validated_input[
         "data"] == "INVALID":
-        result["code"] = 400
-        result["message"] = "Invalid command syntax"
+        code = 400
+        message = "Invalid command syntax"
     elif validated_input["command"] == "CREATE":
         if validated_input["sub_command"] == "/devices":
             code, message = creator.create_device(validated_input["data"])
-            result["code"] = code
-            result["message"] = message
         elif validated_input["sub_command"] == "/connections":
             creator.create_connection(validated_input["data"])
     elif validated_input["command"] == "FETCH":
         if validated_input["sub_command"] == "/devices":
-            fetcher.fetch_devices()
+            code, message = fetcher.fetch_devices()
         elif "info-routes" in validated_input["sub_command"]:
             fetcher.fetch_route_information(validated_input["sub_command"])
-
+    result["code"] = code
+    result["message"] = message
     return result
 
 
