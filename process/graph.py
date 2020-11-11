@@ -23,12 +23,13 @@ class Graph:
     def __init__(self):
         self.graph = {}
 
-    def add_node(self, val):
-        if val not in self.graph.keys():
-            self.graph[val] = set()
-            distance[val] = sys.maxsize
-            visited[val] = False
-            prev[val] = val
+    def add_node(self, type, name):
+        new_node = Node(n_type=type,n_name=name)
+        if new_node not in self.graph.keys():
+            self.graph[new_node] = set()
+            distance[new_node] = sys.maxsize
+            visited[new_node] = False
+            prev[new_node] = new_node
             return True
         return False
 

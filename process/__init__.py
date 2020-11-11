@@ -1,3 +1,3 @@
 from process.graph import Graph
 
-stars = []
+connection_graph = Graph()

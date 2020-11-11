@@ -1,5 +1,5 @@
 from flask import Flask, request, abort
-from process import process
+from process import process_request as proc
 
 app = Flask(__name__)
 
@@ -7,11 +7,12 @@ app = Flask(__name__)
 @app.route('/ajiranet/process', methods=['POST'])
 def process_request():
     data = request.data.decode()
-    response = process.process_request_data(data)
-    print(response)
-    if (response["code"]) == 400:
-        return {"msg": response["message"]}, 400
-    return "Hello world"
+    # response = process_request.process_request_data(data)
+    res = proc.process_req_data(data)
+
+    return {"msg": res["message"]},res["code"]
+    # print(response)
+    # return {"msg": response["message"]}, response["code"]
 
 
 @app.route('/hello')
