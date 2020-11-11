@@ -91,10 +91,8 @@ class Graph:
     def get_path(self, source, dest):
         self.dijkstra(source)
         path = []
-        if dest not in self.graph.keys() or source not in self.graph.keys():
-            return {"message": "Source/Dest is wrong", "path": [-1]}
-        elif distance[dest] >= sys.maxsize:
-            return {"message": "No path exists", "path": [-1]}
+        if distance[dest] >= sys.maxsize:
+            return [None]
         path.append(dest.name)
         while prev[dest] != dest:
             dest = prev[dest]

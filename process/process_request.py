@@ -92,7 +92,7 @@ def process_req_data(input_data):
         if validated_input["sub_command"] == "/devices":
             code, message = fetcher.fetch_devices()
         elif "info-routes" in validated_input["sub_command"]:
-            fetcher.fetch_route_information(validated_input["sub_command"])
+            code,message = fetcher.fetch_route_information(validated_input["sub_command"])
     elif validated_input["command"] == "MODIFY":
         code,message=modifier.modify_strength(validated_input["sub_command"],validated_input["data"])
     result["code"] = code
@@ -103,4 +103,4 @@ def process_req_data(input_data):
 if __name__ == '__main__':
     data = 'FETCH /info-routes?from=A1&to=A1'
 
-    process_req_data(data)
+    print(process_req_data(data))

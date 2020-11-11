@@ -76,8 +76,14 @@ class NetworkSimulationTests(unittest.TestCase):
     def test11_defining_strength_for_non_existing_node_returns_success(self):
         call = self.app.post('ajiranet/process',
                              data= 'MODIFY /devices/A12/strength\ncontent-type : application/json\n{"value": 10}')
-        self.assertEqual(call.status, "400 BAD REQUEST")
+        self.assertEqual(call.status, "404 NOT FOUND")
         self.assertEqual(call.json["msg"], "Device not found")
+
+    def test12_fetching_path_for_valid_nodes_returns_route(self):
+        call = self.app.post('ajiranet/process',
+                             data= 'FETCH /info-routes?from=A1&to=C1')
+        self.assertEqual(call.status, "200 OK")
+        self.assertEqual(call.json["msg"], "Route is A1->B1->C1")
 
 
 if __name__ == '__main__':

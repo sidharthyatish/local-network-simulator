@@ -30,7 +30,7 @@ def modify_strength(sub_command, data):
             code = 400
             message = "Invalid command syntax"
     else:
-        code = 400
+        code = 404
         message = "Device not found"
 
     return code, {"msg": message}
