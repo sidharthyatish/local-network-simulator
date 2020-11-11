@@ -1,6 +1,5 @@
-from process import stars
+from process import connection_graph
 
 
 def create_connection():
-    stars.append("1")
     print("connection created")
