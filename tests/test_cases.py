@@ -228,6 +228,12 @@ class AjiraNetTestCases(unittest.TestCase):
         self.assertEqual(call.status, "200 OK")
         self.assertEqual(call.json["msg"], "Route is A4->A2->A1->A3")
 
+    def test25_get_route_for_a1_a1(self):
+        call = self.app.post('/ajiranet/process',
+                             data='''FETCH /info-routes?from=A1&to=A1''')
+        self.assertEqual(call.status, "200 OK")
+        self.assertEqual(call.json["msg"], "Route is A1->A1")
+
 
 
 if __name__ == '__main__':

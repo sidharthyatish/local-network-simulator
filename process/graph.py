@@ -89,7 +89,9 @@ class Graph:
     def get_path(self, source, dest):
         self.dijkstra(source)
         path = []
-        if distance[dest] >= sys.maxsize:
+        if source == dest:
+            return [source.name,source.name]
+        elif distance[dest] >= sys.maxsize:
             return [None]
         path.append(dest.name)
         while prev[dest] != dest:
