@@ -81,12 +81,12 @@ def process_req_data(input_data):
     if validated_input["command"] == "INVALID" or validated_input["sub_command"] == "INVALID" or validated_input[
         "data"] == "INVALID":
         code = 400
-        message = "Invalid command syntax"
+        message = {"msg": "Invalid command syntax"}
     elif validated_input["command"] == "CREATE":
         if validated_input["sub_command"] == "/devices":
             code, message = creator.create_device(validated_input["data"])
         elif validated_input["sub_command"] == "/connections":
-            creator.create_connection(validated_input["data"])
+            code, message = creator.create_connection(validated_input["data"])
     elif validated_input["command"] == "FETCH":
         if validated_input["sub_command"] == "/devices":
             code, message = fetcher.fetch_devices()

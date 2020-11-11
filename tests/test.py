@@ -49,6 +49,24 @@ class NetworkSimulationTests(unittest.TestCase):
         self.assertEqual(call.status, "200 OK")
         self.assertEqual(call.json["devices"], [{'name': 'C1', 'type': 'COMPUTER'}, {'name': 'B1', 'type': 'COMPUTER'}, {'name': 'A1', 'type': 'COMPUTER'}])
 
+    def test8_creating_connection_between_existing_nodes_is_successful(self):
+        call = self.app.post('ajiranet/process',
+                             data='CREATE /connections\ncontent-type : application/json\n{"source" : "B1", "targets" : ["A1","C1"]}')
+        self.assertEqual(call.status, "200 OK")
+        self.assertEqual(call.json["msg"],"Successfully connected")
+
+    def test9_creating_connection_if_any_node_is_not_created_returns_error(self):
+        call = self.app.post('ajiranet/process',
+                             data='CREATE /connections\ncontent-type : application/json\n{"source" : "A8", "targets" : ["A1","C1"]}')
+        self.assertEqual(call.status, "400 BAD REQUEST")
+        self.assertEqual(call.json["msg"], "Node 'A8' not found")
+
+    def test10_creating_connection_if_taget_node_is_missing_returns_invalid_syntax_error(self):
+        call = self.app.post('ajiranet/process',
+                             data='CREATE /connections\ncontent-type : application/json\n{"source" : "A1"')
+        self.assertEqual(call.status, "400 BAD REQUEST")
+        self.assertEqual(call.json["msg"], "Invalid command syntax")
+
 
 if __name__ == '__main__':
     unittest.main()
