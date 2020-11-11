@@ -12,16 +12,23 @@ class Node:
         self.name = n_name
         self.strength = 5
 
+    def __hash__(self):
+        return hash(self.name)
+
+    def __eq__(self, other):
+        return self.name == other.name
+
 
 class Graph:
     def __init__(self):
         self.graph = {}
 
     def add_node(self, val):
-        if val not in self.graph:
+        if val not in self.graph.keys():
             self.graph[val] = set()
             distance[val] = sys.maxsize
             visited[val] = False
+            prev[val] = val
             return True
         return False
 
