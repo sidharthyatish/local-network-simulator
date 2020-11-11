@@ -39,6 +39,12 @@ class Graph:
             return True
         return False
 
+    def get_node_by_name(self, name):
+        for n in self.graph.keys():
+            if n.name == name:
+                return n
+        return None
+
     def print_graph(self):
 
         for v in self.graph.keys():
