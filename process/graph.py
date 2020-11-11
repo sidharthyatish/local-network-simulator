@@ -77,7 +77,7 @@ class Graph:
                 if visited[n]:
                     continue
                 new_dist = 1 + curr_dist
-                new_strength = strength - 1 if n.type == "computer" else strength * 2
+                new_strength = strength - 1 if n.type == "COMPUTER" else strength * 2
                 if new_dist < distance[n] and new_strength >= 0:
                     prev[n] = popped_node
                     distance[n] = new_dist
@@ -90,6 +90,7 @@ class Graph:
 
     def get_path(self, source, dest):
         self.dijkstra(source)
+        path = []
         if dest not in self.graph.keys() or source not in self.graph.keys():
             return {"message": "Source/Dest is wrong", "path": [-1]}
         elif distance[dest] >= sys.maxsize:
@@ -98,7 +99,7 @@ class Graph:
         while prev[dest] != dest:
             dest = prev[dest]
             path.append(dest.name)
-        return {"message": "Success", "path": path[::-1]}
+        return path[::-1]
 
 
 if __name__ == '__main__':
