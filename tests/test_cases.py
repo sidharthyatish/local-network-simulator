@@ -14,7 +14,7 @@ class AjiraNetTestCases(unittest.TestCase):
                              
                              {"type" : "COMPUTER", "name" : "A1"}''')
         self.assertEqual(call.status, "200 OK")
-        self.assertEqual(call.json["msg"],"Successfully added A1")
+        self.assertEqual(call.json["msg"], "Successfully added A1")
 
     def test02_creating_device_A2(self):
         call = self.app.post('/ajiranet/process',
@@ -130,7 +130,6 @@ class AjiraNetTestCases(unittest.TestCase):
         self.assertEqual(call.status, "200 OK")
         self.assertEqual(call.json["msg"], "Successfully connected")
 
-
     def test15_create_connections_to_itself(self):
         call = self.app.post('/ajiranet/process',
                              data='''CREATE /connections
@@ -139,7 +138,6 @@ class AjiraNetTestCases(unittest.TestCase):
                              {"source" : "A1", "targets" : ["A1"]}''')
         self.assertEqual(call.status, "400 BAD REQUEST")
         self.assertEqual(call.json["msg"], "Cannot connect device to itself")
-
 
     def test16_create_connections_for_already_connected_devices(self):
         call = self.app.post('/ajiranet/process',
@@ -177,7 +175,7 @@ class AjiraNetTestCases(unittest.TestCase):
         self.assertEqual(call.status, "200 OK")
         self.assertEqual(call.json["msg"], "Successfully connected")
 
-    def test19_create_connections_with_invalid_syntax(self):
+    def test20_create_connections_with_invalid_syntax(self):
         call = self.app.post('/ajiranet/process',
                              data='''CREATE /connections
                              content-type : application/json
@@ -186,13 +184,13 @@ class AjiraNetTestCases(unittest.TestCase):
         self.assertEqual(call.status, "400 BAD REQUEST")
         self.assertEqual(call.json["msg"], "Invalid command syntax")
 
-    def test20_create_connections_with_invalid_syntax(self):
+    def test21_create_connections_with_invalid_syntax(self):
         call = self.app.post('/ajiranet/process',
                              data='''CREATE /connections''')
         self.assertEqual(call.status, "400 BAD REQUEST")
         self.assertEqual(call.json["msg"], "Invalid command syntax")
 
-    def test20_create_connections_for_non_existing_node(self):
+    def test22_create_connections_for_non_existing_node(self):
         call = self.app.post('/ajiranet/process',
                              data='''CREATE /connections
                              content-type : application/json
@@ -201,7 +199,7 @@ class AjiraNetTestCases(unittest.TestCase):
         self.assertEqual(call.status, "400 BAD REQUEST")
         self.assertEqual(call.json["msg"], "Node 'A8' not found")
 
-    def test21_create_connections_for_existing_devices_a2_a4(self):
+    def test23_create_connections_for_existing_devices_a2_a4(self):
         call = self.app.post('/ajiranet/process',
                              data='''CREATE /connections
                              content-type : application/json
@@ -210,30 +208,90 @@ class AjiraNetTestCases(unittest.TestCase):
         self.assertEqual(call.status, "200 OK")
         self.assertEqual(call.json["msg"], "Successfully connected")
 
-    def test22_get_route_for_a1_a4(self):
+    def test24_get_route_for_a1_a4(self):
         call = self.app.post('/ajiranet/process',
                              data='''FETCH /info-routes?from=A1&to=A4''')
         self.assertEqual(call.status, "200 OK")
         self.assertEqual(call.json["msg"], "Route is A1->A2->A4")
 
-    def test23_get_route_for_a1_a5(self):
+    def test25_get_route_for_a1_a5(self):
         call = self.app.post('/ajiranet/process',
                              data='''FETCH /info-routes?from=A1&to=A5''')
         self.assertEqual(call.status, "200 OK")
         self.assertEqual(call.json["msg"], "Route is A1->A2->R1->A5")
 
-    def test24_get_route_for_a4_a3(self):
+    def test26_get_route_for_a4_a3(self):
         call = self.app.post('/ajiranet/process',
                              data='''FETCH /info-routes?from=A4&to=A3''')
         self.assertEqual(call.status, "200 OK")
         self.assertEqual(call.json["msg"], "Route is A4->A2->A1->A3")
 
-    def test25_get_route_for_a1_a1(self):
+    def test27_get_route_for_a1_a1(self):
         call = self.app.post('/ajiranet/process',
                              data='''FETCH /info-routes?from=A1&to=A1''')
         self.assertEqual(call.status, "200 OK")
         self.assertEqual(call.json["msg"], "Route is A1->A1")
 
+    def test28_get_route_for_a1_a6(self):
+        call = self.app.post('/ajiranet/process',
+                             data='''FETCH /info-routes?from=A1&to=A6''')
+        self.assertEqual(call.status, "404 NOT FOUND")
+        self.assertEqual(call.json["msg"], "Route not found")
+
+    def test29_get_route_for_a2_r1(self):
+        call = self.app.post('/ajiranet/process',
+                             data='''FETCH /info-routes?from=A2&to=R1''')
+        self.assertEqual(call.status, "400 BAD REQUEST")
+        self.assertEqual(call.json["msg"], "Route cannot be calculated with repeater")
+
+    def test30_get_route_from_a3_only(self):
+        call = self.app.post('/ajiranet/process',
+                             data='''FETCH /info-routes?from=A3''')
+        self.assertEqual(call.status, "400 BAD REQUEST")
+        self.assertEqual(call.json["msg"], "Invalid Request")
+
+    def test31_get_route_for_no_route(self):
+        call = self.app.post('/ajiranet/process',
+                             data='''FETCH /info-routes''')
+        self.assertEqual(call.status, "400 BAD REQUEST")
+        self.assertEqual(call.json["msg"], "Invalid Request")
+
+    def test32_get_route_with_invalid_node(self):
+        call = self.app.post('/ajiranet/process',
+                             data='''FETCH /info-routes?from=A1&to=A10''')
+        self.assertEqual(call.status, "400 BAD REQUEST")
+        self.assertEqual(call.json["msg"], "Node 'A10' not found")
+
+    def test33_fetch_devices_returns_device_list(self):
+        call = self.app.post('/ajiranet/process',
+                             data='''FETCH /devices''')
+        self.assertEqual(call.json["devices"], [
+            {
+                'type': 'COMPUTER',
+                'name': 'A1'
+            },
+            {
+                'type': 'COMPUTER',
+                'name': 'A2'
+            }, {
+                'type': 'COMPUTER',
+                'name': 'A3'
+            },
+            {
+                'type': 'COMPUTER',
+                'name': 'A4'
+            }, {
+                'type': 'COMPUTER',
+                'name': 'A5'
+            },
+            {
+                'type': 'COMPUTER',
+                'name': 'A6'
+            }, {
+                'type': 'REPEATER',
+                'name': 'R1'
+            }
+        ])
 
 
 if __name__ == '__main__':

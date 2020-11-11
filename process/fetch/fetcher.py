@@ -26,10 +26,10 @@ def fetch_route_information(data):
         to_node = connection_graph.get_node_by_name(t_node[0])
         if from_node is None:
             code = 400
-            message = "Node '"+f_node+"' not found"
+            message = "Node '"+f_node[0]+"' not found"
         elif to_node is None:
             code = 400
-            message = "Node '" + t_node + "' not found"
+            message = "Node '" + t_node[0] + "' not found"
         elif from_node.type == "REPEATER" or to_node.type == "REPEATER":
             code = 400
             message = "Route cannot be calculated with repeater"
