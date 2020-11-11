@@ -24,7 +24,7 @@ class Graph:
         self.graph = {}
 
     def add_node(self, type, name):
-        new_node = Node(n_type=type,n_name=name)
+        new_node = Node(n_type=type, n_name=name)
         if new_node not in self.graph.keys():
             self.graph[new_node] = set()
             distance[new_node] = sys.maxsize
@@ -34,11 +34,19 @@ class Graph:
         return False
 
     def add_edge(self, source, dest):
-        if source in self.graph and dest in self.graph:
-            self.graph[source].add(dest)
-            self.graph[dest].add(source)
-            return True
-        return False
+        source_node = self.get_node_by_name(source)
+        dest_node = self.get_node_by_name(dest)
+
+        if source_node is None or dest_node is None:
+            return False
+        self.graph[source_node].add(dest_node)
+        self.graph[dest_node].add(source_node)
+        return True
+
+    def edge_exists(self, source, dest):
+        source_node = self.get_node_by_name(source)
+        dest_node = self.get_node_by_name(dest)
+        return source_node is not None and dest_node is not None and dest_node in self.graph[source_node]
 
     def get_node_by_name(self, name):
         for n in self.graph.keys():
