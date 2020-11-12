@@ -5,17 +5,25 @@ import json
 
 
 def input_validator(input_data):
-    possible_commands = {"CREATE": ["/devices", "/connections"], "MODIFY": ["/devices"], "FETCH": ["/devices"]}
+    """
+    :param input_data: input data as text
+    :return: {"command" : MAIN_COMMAND, "sub_command" : SUB_COMMAND, "data" ; {DATA_AS_DICT}}
 
-    response = {"command": None, "sub_command": None, "data": {}}
-    data_lines = input_data.splitlines()
-    '''
-    data_lines must have 
+    data_lines must have
     Line 0 -> Command (CREATE /devices)
     Line 1 -> header  (content-type : application/json)
     Lines in between -> spaces
     Line n-1 -> parameter for command ({"type" : "COMPUTER", "name": "A1"})
-    '''
+
+    Depending on the type of command and sub command, we need to parse the data to be processed by that command
+    Here we only validate commands and their structure, for each command, there can be further validation to enure that
+    the data given for the command has all required information. Did that in each of the respective process module
+    """
+
+    possible_commands = {"CREATE": ["/devices", "/connections"], "MODIFY": ["/devices"], "FETCH": ["/devices"]}
+
+    response = {"command": None, "sub_command": None, "data": {}}
+    data_lines = input_data.splitlines()
     len_data_line = len(data_lines)
     if len_data_line > 0:
         command_line = data_lines[0].split(" ")
@@ -46,39 +54,22 @@ def input_validator(input_data):
     return response
 
 
-def process_request_data(data):
-    data_lines = data.splitlines()
-    result = {"code": None, "message": None}
+def process_request_data(input_data):
+    """
+    :param input_data: Input data as raw text :return: Return code and message for the given input ex. {"code" : 200,
+    "message" : {"msg" : "Successfully connected"}}
 
-    command_line = data_lines[0].split(" ")
-    # print(command_line)
-    command = command_line[0]
-    if command == 'CREATE':
-        # print(data_lines)
-        if len(data_lines) < 3:
-            result["code"] = 400
-            result["message"] = "Invalid command"
-        sub_command = command_line[1]
-        if sub_command == '/devices':
-            creator.create_device()
-        elif sub_command == '/connection':
-            creator.create_connection()
-    elif command == 'FETCH':
-        sub_command = command_line[1]
-        if sub_command == '/devices':
-            creator.create_device()
-        elif sub_command == '/connection':
-            creator.create_connection()
-
-    return result
-
-
-def process_req_data(input_data):
+        Here we make a high level validation of the commands (syntax check)
+        Then we call the respective module with its data, depending on the command and sub commands
+    """
     validated_input = input_validator(input_data)
     result = {"code": None, "message": None}
     code = 404
     message = "Unknown error"
     print(validated_input)
+
+    # In high level validation, we can determine if the overall syntax is valid or not
+    # Else we get the respective sub commands and delegate the request to the respective modules
     if validated_input["command"] == "INVALID" or validated_input["sub_command"] == "INVALID" or validated_input[
         "data"] == "INVALID":
         code = 400
@@ -92,9 +83,9 @@ def process_req_data(input_data):
         if validated_input["sub_command"] == "/devices":
             code, message = fetcher.fetch_devices()
         elif "info-routes" in validated_input["sub_command"]:
-            code,message = fetcher.fetch_route_information(validated_input["sub_command"])
+            code, message = fetcher.fetch_route_information(validated_input["sub_command"])
     elif validated_input["command"] == "MODIFY":
-        code,message=modifier.modify_strength(validated_input["sub_command"],validated_input["data"])
+        code, message = modifier.modify_strength(validated_input["sub_command"], validated_input["data"])
     result["code"] = code
     result["message"] = message
     return result
@@ -103,4 +94,4 @@ def process_req_data(input_data):
 if __name__ == '__main__':
     data = 'FETCH /info-routes?from=A1&to=A1'
 
-    print(process_req_data(data))
+    print(process_request_data(data))
