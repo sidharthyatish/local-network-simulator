@@ -108,3 +108,9 @@ Run the test files ```main``` function. Note that the order of the tests are dep
 
 ## Calling the endpoint
 I am including both screenshots of using Postman as well as curl command in terminal.
+
+### Postman
+<img src="https://github.com/sidharthyatish/local-network-simulator/blob/main/screenshots/postman.png" alt="Making a POST call from python with input in body as raw text">
+
+### Curl
+<img src="https://github.com/sidharthyatish/local-network-simulator/blob/main/screenshots/curl.png" alt="Making a POST call curl">
