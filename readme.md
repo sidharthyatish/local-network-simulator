@@ -87,7 +87,7 @@ Start the server
 ```
 python server.py
 ```
-The server runs on port **8080**
+The server runs on port **5000**
 
 ## Running tests
 There are two test files in /tests/ directory
@@ -107,8 +107,8 @@ python -m unittest tests/test_cases.py
 Run the test files ```main``` function. Note that the order of the tests are dependant on each other
 
 ## Calling the endpoint
-I am including both screenshots of using Postman as well as curl command in terminal.
-
+I am including both screenshots of using Postman as well as curl command in terminal.  
+***Note***, the app runs on ***5000*** port though screenshot shows 8080 (Causing issues in windows). So use 5000 instead of 8080.
 ### Postman
 <img src="https://github.com/sidharthyatish/local-network-simulator/blob/main/screenshots/postman.png" alt="Making a POST call from python with input in body as raw text">
 
