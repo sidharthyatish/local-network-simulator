@@ -2,6 +2,14 @@ from process import connection_graph
 
 
 def create_connection(data):
+    """
+
+    :param data: A dict containing source and target nodes
+    :return: code,{"msg" : MESSAGE}
+
+    All the validations such as making connection to already connected or self nodes, are made here.
+    If both the nodes exist and have no previous connection, a new connection is made
+    """
     print("CREATING CONNECTION ", data)
 
     code = None
@@ -40,6 +48,13 @@ def create_connection(data):
 
 
 def create_device(data):
+    """
+
+    :param data: Dict containing device type and name
+    :return: code,{"msg" : MESSAGE}
+
+    Validations regarding supported node types are made here and we create a node if it is not already created
+    """
     possible_devices = ["COMPUTER", "REPEATER"]
     print("CREATING DEVICE ", data)
     code = None
@@ -51,6 +66,7 @@ def create_device(data):
             print("NODE", node_type, "NOT SUPPORTED")
             code = 400
             message = "type '" + node_type + "' is not supported"
+        # If node is created, it returns True
         elif connection_graph.add_node(type=node_type, name=node_name):
             print("NODE", node_type, node_name, "CREATED")
             code = 200
