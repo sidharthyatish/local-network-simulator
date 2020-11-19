@@ -6,9 +6,10 @@ prev = {}
 
 
 class Node:
-    def __init__(self, n_type, n_name):
+    def __init__(self, n_type, n_name, n_subtype=None):
         self.type = n_type
         self.name = n_name
+        self.sub_type = n_subtype
         self.strength = 5
 
     def __hash__(self):
@@ -22,8 +23,8 @@ class Graph:
     def __init__(self):
         self.graph = {}
 
-    def add_node(self, type, name):
-        new_node = Node(n_type=type, n_name=name)
+    def add_node(self, type, name, sub_type=None):
+        new_node = Node(n_type=type, n_name=name, n_subtype=sub_type)
         if new_node not in self.graph.keys():
             self.graph[new_node] = set()
             return True
@@ -94,7 +95,13 @@ class Graph:
 
                 # Updating distance as well as strength
                 new_dist = 1 + curr_dist
-                new_strength = strength - 1 if n.type == "COMPUTER" else strength * 2
+                # new_strength = strength - 1 if n.type == "COMPUTER" else strength * 2
+                if n.type == "COMPUTER":
+                    new_strength = strength - 1
+                elif n.type == "BRIDGE":
+                    new_strength = strength - 2
+                else:
+                    new_strength = strength *2
                 if new_dist < distance[n] and new_strength >= 0:
                     prev[n] = popped_node
                     distance[n] = new_dist

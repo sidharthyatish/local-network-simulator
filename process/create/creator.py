@@ -55,7 +55,7 @@ def create_device(data):
 
     Validations regarding supported node types are made here and we create a node if it is not already created
     """
-    possible_devices = ["COMPUTER", "REPEATER"]
+    possible_devices = ["COMPUTER", "REPEATER", "BRIDGE"]
     print("CREATING DEVICE ", data)
     code = None
     message = None
@@ -79,4 +79,29 @@ def create_device(data):
         print("Type or Name not found")
         code = 400
         message = "Invalid command"
+    return code, {"msg": message}
+
+
+def add_bridge(data):
+    print('ADDING BRIDGE ', data)
+    possible_bridges = ["UPPER", "LOWER"]
+    code = None
+    message = None
+
+    bridge_name = data["b_name"]
+    bridge_type = data["b_type"]
+
+    if bridge_type not in possible_bridges:
+        print("Type ", bridge_type, " not supported")
+        code = 400
+        message = "type '" + bridge_type + "' is not supported"
+    elif connection_graph.add_node(type="BRIDGE", name=bridge_name, sub_type=bridge_type):
+        print("BRIDGE", bridge_type, bridge_name, "CREATED")
+        code = 200
+        message = "Successfully added " + bridge_name
+    else:
+        print("BRIDGE ALREADY EXISTS")
+        code = 400
+        message = "Bridge '" + bridge_name + "' already exists"
+
     return code, {"msg": message}

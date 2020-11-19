@@ -1,6 +1,7 @@
 from process.create import creator
 from process.fetch import fetcher
 from process.modify import modifier
+from process.send import sender
 import json
 
 
@@ -20,7 +21,8 @@ def input_validator(input_data):
     the data given for the command has all required information. Did that in each of the respective process module
     """
 
-    possible_commands = {"CREATE": ["/devices", "/connections"], "MODIFY": ["/devices"], "FETCH": ["/devices"]}
+    possible_commands = {"CREATE": ["/devices", "/connections"], "MODIFY": ["/devices"], "FETCH": ["/devices"],
+                         "ADD": ["BRIDGE"], "SEND":["/info"]}
 
     response = {"command": None, "sub_command": None, "data": {}}
     data_lines = input_data.splitlines()
@@ -36,8 +38,11 @@ def input_validator(input_data):
                 sub_command = command_line[1]
                 if command == "CREATE" and sub_command not in possible_commands[command]:
                     response["sub_command"] = "INVALID"
+                elif command == "ADD" and sub_command not in possible_commands[command]:
+                    response["sub_command"] = "INVALID"
                 else:
                     response["sub_command"] = sub_command
+                    command_data = {}
                     if command in ["CREATE", "MODIFY"]:
                         last_data_line = data_lines[len_data_line - 1].strip()
                         try:
@@ -46,7 +51,15 @@ def input_validator(input_data):
                                 command_data = "INVALID"
                         except ValueError:
                             command_data = "INVALID"
-                        response["data"] = command_data
+
+                    elif command == "ADD":
+                        try:
+                            bridge_name = command_line[2]
+                            bridge_type = command_line[3]
+                            command_data = {"b_name": bridge_name, "b_type": bridge_type}
+                        except IndexError:
+                            command_data = "INVALID"
+                response["data"] = command_data
 
     else:
         response["command"] = "INVALID"
@@ -84,14 +97,19 @@ def process_request_data(input_data):
             code, message = fetcher.fetch_devices()
         elif "info-routes" in validated_input["sub_command"]:
             code, message = fetcher.fetch_route_information(validated_input["sub_command"])
+    elif validated_input["command"] == "SEND":
+        if "info" in validated_input["sub_command"]:
+            code, message = sender.send_message(validated_input["sub_command"])
     elif validated_input["command"] == "MODIFY":
         code, message = modifier.modify_strength(validated_input["sub_command"], validated_input["data"])
+    elif validated_input["command"] == "ADD":
+        code, message = creator.add_bridge(validated_input["data"])
     result["code"] = code
     result["message"] = message
     return result
 
 
 if __name__ == '__main__':
-    data = 'FETCH /info-routes?from=A1&to=A1'
+    data = '''SEND /info?from=A1&to=A3&msg="Hello"'''
 
     print(process_request_data(data))
