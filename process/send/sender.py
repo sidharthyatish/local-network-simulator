@@ -7,7 +7,7 @@ def send_message(data):
     # Send message syntax SEND /info?from=A1&to=A3&msg="hello"
     code = None
     message = None
-    print("FETCHING ROUTE ", data)
+    print("SENDING MESSAGE ", data)
     parsed_url = urlparse(data)
     query_dict = parse_qs(parsed_url.query)
 
